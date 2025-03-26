@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liyuu 二维码转换</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(45deg, #3498db, #9b59b6, #e74c3c, #f1c40f);
+            background-size: 400% 400%;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .title-container {
+            text-align: center;
+        }
+
+        .liyuu-title {
+            color: #333;
+            font-size: 3rem;
+            margin-bottom: 5px;
+            background-color: #e0f7fa;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(255, 255, 255, 0.5);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .liyuu-title:hover {
+            transform: translateY(-5px);
+        }
+
+        .conversion-title {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            background-color: white;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .conversion-title:hover {
+            transform: translateY(-5px);
+        }
+
+        .small-text {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .ad-space-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .ad-space {
+            border: 2px dashed #ccc;
+            width: 13cm;
+            height: 3cm;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .ad-space:hover {
+            transform: translateY(-5px);
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        input[type="text"]:hover {
+            transform: translateY(-3px);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+        }
+
+        .qr-note {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .qr-generation-area {
+            border: 2px dashed #ccc;
+            width: 10cm;
+            height: 10cm;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #777;
+            position: relative;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .qr-generation-area:hover {
+            transform: translateY(-5px);
+        }
+
+        .qr-generation-area img {
+            width: 8.5cm;
+            height: 8.5cm;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .qr-generation-area img:hover {
+            transform: translateY(-5px);
+        }
+
+        #sponsor-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transition: transform 0.3s ease;
+        }
+
+        .modal-content:hover {
+            transform: translateY(-5px);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .modal-content img {
+            margin-bottom: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* 新增复制文本功能样式 */
+        #copy-text-button {
+            margin-top: 15px;
+        }
+
+        input[type="color"] {
+            border: none;
+            background: none;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            vertical-align: middle;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+</head>
+
+<body>
+    <div class="title-container">
+        <div class="liyuu-title">Liyuu</div>
+        <div class="conversion-title">二维码转换</div>
+    </div>
+    <p class="small-text">广告位+q：3641306879</p>
+
+    <div class="ad-space-container">
+        <div class="ad-space">广告位 1</div>
+        <div class="ad-space">广告位 2</div>
+        <div class="ad-space">广告位 3</div>
+    </div>
+
+    <div class="input-section">
+        <input type="text" id="text-input" placeholder="输入要转换的文字或网址">
+        <div class="button-container">
+            <button onclick="generateQRCode()">生成二维码</button>
+            <button id="import-logo-button" onclick="document.getElementById('logo-input').click()">导入 logo</button>
+            <input type="file" id="logo-input" accept="image/*" style="display: none;">
+            <button onclick="showSponsorCode()">赞助</button>
+        </div>
+        <div class="button-container">
+            <button onclick="toggleForegroundColorPicker()">前景</button>
+            <input type="color" id="foreground-color-picker" value="#000000" style="display: none;" onchange="changeForegroundColor()">
+            <button onclick="toggleBackgroundColorPicker()">背景</button>
+            <input type="color" id="background-color-picker" value="#ffffff" style="display: none;" onchange="changeBackgroundColor()">
+            <button onclick="toggleBorderColorPicker()">边框</button>
+            <input type="color" id="border-color-picker" value="#000000" style="display: none;" onchange="changeBorderColor()">
+        </div>
+    </div>
+
+    <p class="qr-note">请使用手机自带扫一扫；使用微信扫一扫时，扫描后显示的是网址链接，长按链接即可访问网站，也可点击下方复制文本。</p>
+
+    <div id="sponsor-modal">
+        <div class="modal-content">
+            <h2>赞助收款码</h2>
+            <img src='wechat-donate.jpg'>
+            <button onclick="hideSponsorCode()">关闭</button>
+        </div>
+    </div>
+
+    <div class="qr-generation-area" id="qr-generation-area">
+        二维码生成区域
+    </div>
+
+    <!-- 新增复制文本按钮 -->
+    <button id="copy-text-button" onclick="copyTextToClipboard()">复制文本</button>
+
+    <script>
+        let foregroundColor = "#000000";
+        let backgroundColor = "#ffffff";
+        let borderColor = "#000000";
+        const borderWidth = 0.5 * 37.7952755906; // 0.5cm 转换为像素，1cm 约等于 37.7952755906 像素
+
+        function generateQRCode() {
+            const text = document.getElementById('text-input').value;
+            const logoInput = document.getElementById('logo-input');
+            const qrCodeArea = document.getElementById('qr-generation-area');
+
+            if (text) {
+                try {
+                    const qr = qrcode(0, 'L');
+                    const byteSequence = unescape(encodeURIComponent(text));
+                    qr.addData(byteSequence, 'Byte');
+                    qr.make();
+
+                    const cellSize = 4;
+                    const qrSize = qr.getModuleCount();
+                    const qrCanvasWidth = qrSize * cellSize;
+                    const qrCanvasHeight = qrSize * cellSize;
+                    const canvasWidth = qrCanvasWidth + 2 * borderWidth;
+                    const canvasHeight = qrCanvasHeight + 2 * borderWidth;
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = canvasWidth;
+                    canvas.height = canvasHeight;
+                    const ctx = canvas.getContext('2d');
+
+                    // 绘制背景色
+                    ctx.fillStyle = backgroundColor;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    // 绘制边框
+                    ctx.strokeStyle = borderColor;
+                    ctx.lineWidth = borderWidth;
+                    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+                    // 绘制二维码
+                    ctx.fillStyle = foregroundColor;
+                    for (let row = 0; row < qrSize; row++) {
+                        for (let col = 0; col < qrSize; col++) {
+                            if (qr.isDark(row, col)) {
+                                ctx.fillRect(col * cellSize + borderWidth, row * cellSize + borderWidth, cellSize, cellSize);
+                            }
+                        }
+                    }
+
+                    if (logoInput.files.length > 0) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const logoImg = new Image();
+                            logoImg.src = e.target.result;
+                            logoImg.onload = function () {
+                                const canvasWithLogo = document.createElement('canvas');
+                                const ctxWithLogo = canvasWithLogo.getContext('2d');
+                                canvasWithLogo.width = canvas.width;
+                                canvasWithLogo.height = canvas.height;
+                                ctxWithLogo.drawImage(canvas, 0, 0);
+
+                                // 控制 logo 大小，确保不覆盖关键区域
+                                const logoSize = Math.min(canvas.width, canvas.height) / 6;
+                                const x = (canvas.width - logoSize) / 2;
+                                const y = (canvas.height - logoSize) / 2;
+
+                                // 为 logo 添加白色边框
+                                const borderWidthLogo = 2;
+                                ctxWithLogo.fillStyle = 'white';
+                                ctxWithLogo.fillRect(x - borderWidthLogo, y - borderWidthLogo, logoSize + 2 * borderWidthLogo, logoSize + 2 * borderWidthLogo);
+
+                                ctxWithLogo.drawImage(logoImg, x, y, logoSize, logoSize);
+                                qrCodeArea.innerHTML = `<img src="${canvasWithLogo.toDataURL()}" alt="QR Code with Logo">`;
+                            };
+                        };
+                        reader.readAsDataURL(logoInput.files[0]);
+                    } else {
+                        qrCodeArea.innerHTML = `<img src="${canvas.toDataURL()}" alt="QR Code">`;
+                    }
+                } catch (error) {
+                    alert('生成二维码时出现错误：' + error.message);
+                }
+            } else {
+                alert('请输入要转换的文字或网址！');
+            }
+        }
+
+        function showSponsorCode() {
+            document.getElementById('sponsor-modal').style.display = 'flex';
+        }
+
+        function hideSponsorCode() {
+            document.getElementById('sponsor-modal').style.display = 'none';
+        }
+
+        // 新增复制文本功能函数
+        function copyTextToClipboard() {
+            const text = document.getElementById('text-input').value;
+            if (text) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('文本已复制到剪贴板！');
+            } else {
+                alert('请先输入要转换的文字或网址！');
+            }
+        }
+
+        function toggleForegroundColorPicker() {
+            const picker = document.getElementById('foreground-color-picker');
+            picker.style.display = picker.style.display === 'none' ? 'inline-block' : 'none';
+        }
+
+        function toggleBackgroundColorPicker() {
+            const picker = document.getElementById('background-color-picker');
+            picker.style.display = picker.style.display === 'none' ? 'inline-block' : 'none';
+        }
+
+        function toggleBorderColorPicker() {
+            const picker = document.getElementById('border-color-picker');
+            picker.style.display = picker.style.display === 'none' ? 'inline-block' : 'none';
+        }
+
+        function changeForegroundColor() {
+            foregroundColor = document.getElementById('foreground-color-picker').value;
+            generateQRCode();
+        }
+
+        function changeBackgroundColor() {
+            backgroundColor = document.getElementById('background-color-picker').value;
+            generateQRCode();
+        }
+
+        function changeBorderColor() {
+            borderColor = document.getElementById('border-color-picker').value;
+            generateQRCode();
+        }
+    </script>
+</body>
+
+</html>    
